@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+Online Market OG - Register
+{% endblock %}
+
+{% block body %}
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color:rgba(205, 205, 205, 0.855);
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid black;
+        border-radius: 3px;
+    }
+
+    .form-group input[type="submit"] {
+        background-color: blue;
+        color: whitesmoke;
+        border: none;
+        border-radius: 3px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    .form-group input[type="submit"]:hover {
+        background-color: #0091ff;
+    }
+    body {
+    background-image: url('/static/images/Tech.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+  }
+</style>
+<div class="container">
+    <h2>User Register</h2>
+    <hr>
+    <div class="row">
+        <form method="post" enctype="multipart/form-data" class="col p-3">
+            <div class="row">
+                {% for errors in form.errors.values() %}
+                <div class="alert alert-danger">
+                    {% for error in errors %}
+                    * {{ error }} <br>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {{ form.hidden_tag() }}
+
+            <div class="row">
+                {{ form.img.label.text }}: {{ form.img(accept=" .jpg, .png ") }}
+            </div>
+            <div class="row mt-2">
+                {{ form.name(class="form-control", placeholder=form.name.label.text) }}
+            </div>
+            <div class="row mt-2">
+                {{ form.price(class="form-control", placeholder=form.price.label.text) }}
+            </div>
+            <div class="row mt-2">
+                {{ form.info(class="form-control", placeholder=form.info.label.text) }}
+            </div>
+            <div class="row mt-1">
+                {{ form.submit(class="btn btn-primary")}}
+
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

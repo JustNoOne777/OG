@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}
+Online Market OG - Product Details
+{% endblock %}
+
+{% block body %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .product-details {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+
+    .product-img {
+        max-width: 310px;
+        margin: 0 auto 20px;
+    }
+
+    .product-info {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
+    body {
+        background-image: url('/static/images/Tech.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+</style>
+
+<div class="container my-4">
+    <div class="row bg-white rounded shadow product-details">
+        <div class="col-md-4 text-center">
+            <img src="/static/images/{{ product['img'] }}" class="img-fluid product-img" alt="{{ product['name'] }}">
+        </div>
+        <div class="col-md-10">
+            <h3 class="product-info">სახელი: {{ product['name'] }}</h3>
+            <h4 class="product-info">ფასი: {{ product['price'] }} ₾</h4>
+            <p class="product-info">აღწერა: {{ product['info'] }}</p>
+            <hr>
+            {% if current_user.is_authenticated %}
+            <button class="btn btn-primary" onclick="buyProduct(1)">ყიდვა</button>
+            {% endif %}
+            <hr>
+            {% if commands %}
+            <div class="mt-4">
+                <h4 class="product-info">ატვირთული კომანტარები:</h4>
+                <ul>
+                    {% for command in commands %}
+                    <li>{{ command.command }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="row bg-white rounded shadow product-details">
+        <div class="col-md-12">
+            <h3 class="product-info">კომენტარის ატვირთვა:</h3>
+            <form id="commandForm">
+                <div class="form-group">
+                    <label for="commandInput">კომენტარი:</label>
+                    <input type="text" class="form-control" id="commandInput" required>
+                    <input type="hidden" id="productId" value="{{ product['id'] }}">
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">ატვირთვა</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function buyProduct(productId) {
+        fetch('/buy_product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId: productId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product has been added to the cart!');
+                } else {
+                    alert('There was an error adding the product to the cart.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    document.getElementById('commandForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const command = document.getElementById('commandInput').value;
+        const productId = document.getElementById('productId').value;
+        fetch('/save_command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ command: command, product_id: productId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('commandForm').reset();
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{% endblock %}
