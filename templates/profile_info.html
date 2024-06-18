@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}
+Online Market OG - Profile Info
+{% endblock %}
+
+{% block body %}
+{{ form.hidden_tag() }}
+
+<div class="row">
+    {{ form.profile_img.label.text }}: {{ form.profile_img(accept=" .jpg, .png ") }}
+</div>
+{% endblock %}
