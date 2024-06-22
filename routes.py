@@ -1,7 +1,7 @@
 from flask import jsonify, render_template, redirect, request
 from os import path 
 from flask_login import login_user, logout_user, login_required, current_user
-from models import Command, Product, User
+from models import Command, Product, User, Profile
 from forms import ProductForm, RegisterForm, LoginForm
 from ext import app,db
 
@@ -86,7 +86,7 @@ def create_product():
         new_product=Product(name=form.name.data, price=form.price.data, info=form.info.data)
 
         image= form.img.data
-        directory= path.join(app.root_path, "static", "images", image.filename )
+        directory= path.join(app.root_path, "static", "Images", image.filename )
         image.save(directory)
         new_product.img = image.filename
 
@@ -95,10 +95,10 @@ def create_product():
 
     return render_template("create_product.html", form=form)
 
-@app.route("/profile/<int:profile_id>")
+@app.route('/profile/<int:profile_id>')
 def profile(profile_id):
-    print("Reccived profile id", profile_id)
-    return render_template("profile.html", user=profiles[profile_id])
+    profile = Profile.query.get(profile_id)
+    return render_template("profile.html", user=profile)
 
 @app.route('/buy_product', methods=['POST'])
 def buy_product():
