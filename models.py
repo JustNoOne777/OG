@@ -50,6 +50,16 @@ class User(db.Model, BaseModel, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False)
+    gender = db.Column(db.String(10), nullable=False)
+    img = db.Column(db.String(120), nullable=False)
+    
+    def __repr__(self):
+        return f'<Profile {self.username}>'
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
